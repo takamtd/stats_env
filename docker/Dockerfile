@@ -39,10 +39,10 @@ RUN pip install opencv-python
 
 # install R 
 RUN apt-get update -y && \
-    apt-get install -y r-base && \
-    apt-get install libzmq3-dev libcurl4-openssl-dev libssl-dev && \
-    RUN Rscript -e "install.packages(c('repr', 'IRdisplay', 'IRkernel'), type = 'source')" && \
-    RUN Rscript -e "IRkernel::installspec()"
+    apt-get install -y \
+    r-base libzmq3-dev libcurl4-openssl-dev libssl-dev
+RUN Rscript -e "install.packages(c('repr', 'IRdisplay', 'IRkernel'), type = 'source')"
+RUN Rscript -e "IRkernel::installspec()"
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
