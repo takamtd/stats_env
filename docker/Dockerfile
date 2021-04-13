@@ -42,7 +42,6 @@ RUN apt-get update -y && \
     apt-get install -y \
     r-base libzmq3-dev libcurl4-openssl-dev libssl-dev
 RUN Rscript -e "install.packages(c('repr', 'IRdisplay', 'IRkernel'), type = 'source')"
-RUN Rscript -e "IRkernel::installspec()"
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
@@ -54,9 +53,12 @@ WORKDIR /home/${USER_NAME}
 USER ${USER_NAME}
 ENV HOME /home/${USER_NAME}
 
+RUN touch setup.R & \
+    echo "IRkernel::installspec()" > setup.R
+
 USER root
 
-ENV NB_PREFIX /
+# ENV NB_PREFIX /
 ENV DISPLAY=":1.0"
 
-CMD ["sh","-c", "jupyter lab --notebook-dir=/home/jovyan --ip=0.0.0.0 --no-browser --allow-root --port=8888 --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.allow_origin='*' --NotebookApp.base_url=${NB_PREFIX}"]
+# CMD ["sh","-c", "jupyter lab --notebook-dir=/home/jovyan --ip=0.0.0.0 --no-browser --allow-root --port=8888 --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.allow_origin='*' --NotebookApp.base_url=${NB_PREFIX}"]
