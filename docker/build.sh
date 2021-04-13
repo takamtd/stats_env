@@ -1,0 +1,1 @@
+docker image build -t python_env:v1.0 .
