@@ -30,7 +30,6 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | b
 RUN conda install -c conda-forge nodejs && conda update nodejs
 # RUN conda install -c conda-forge jupyter-server-proxy
 RUN pip install jupyter-server-proxy
-# RUN jupyter labextension install @jupyterlab/server-proxy
 RUN pip install jupyter-vscode-proxy
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 RUN code-server \
