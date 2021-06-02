@@ -1,30 +1,36 @@
 FROM continuumio/anaconda3
 
+
 # update and install
-RUN apt update -y && apt upgrade -y && apt install -y \
+RUN apt-get update -y && apt-get upgrade -y && apt-get install -y \
     wget \
     curl \
     git \
     python-openssl \
     xvfb \
     python-opengl \
-    nodejs \
     node-gyp \
-    npm \
     icewm \
     python3 \
     python3-pip
 
 # install jupyter lab
 RUN apt-get update -y && apt-get install -y \
-    libgl1-mesa-glx wget curl git tmux imagemagick htop libsndfile1 nodejs npm \
+    libgl1-mesa-glx wget curl git tmux imagemagick htop libsndfile1\
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# install nodejs
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash && \
+    . ~/.bashrc && \
+    nvm install v14.17.0
+
 # install code server
 # https://github.com/jupyterhub/jupyter-server-proxy
-RUN conda install jupyter-server-proxy -c conda-forge
-RUN jupyter labextension install @jupyterlab/server-proxy
+RUN conda install -c conda-forge nodejs && conda update nodejs
+# RUN conda install -c conda-forge jupyter-server-proxy
+RUN pip install jupyter-server-proxy
+# RUN jupyter labextension install @jupyterlab/server-proxy
 RUN pip install jupyter-vscode-proxy
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 RUN code-server \
@@ -43,6 +49,9 @@ RUN apt-get update -y && \
     r-base libzmq3-dev libcurl4-openssl-dev libssl-dev
 RUN Rscript -e "install.packages(c('repr', 'IRdisplay', 'IRkernel'), type = 'source')"
 
+# matplotlib日本語化
+RUN pip install japanize-matplotlib
+
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 ENV USER_NAME=jovyan
@@ -52,6 +61,8 @@ WORKDIR /home/${USER_NAME}
 
 USER ${USER_NAME}
 ENV HOME /home/${USER_NAME}
+
+RUN mkdir workdir
 
 RUN touch setup.R & \
     echo "IRkernel::installspec()" > setup.R
