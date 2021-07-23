@@ -1,13 +1,11 @@
 version: '3'
 services:
   stats:
-    image: python_env:v2.3
+    image: python_ubuntu_env:v1.0
     user: root
     ports:
-    - "8888:8888"
+      - "8888:8888"
     volumes:
-    - ../workdir:/home/jovyan/workdir
+      - ../workdir:/home/jovyan/workdir
     command: >
-      bash -c "Rscript setup.R && 
-      rm setup.R &&
-      jupyter lab --notebook-dir=/home/jovyan --ip=0.0.0.0 --no-browser --allow-root --port=8888 --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.allow_origin='*'"
+      jupyter lab --notebook-dir=/home/jovyan --ip=0.0.0.0 --no-browser --allow-root --port=8888 --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.allow_origin='*'

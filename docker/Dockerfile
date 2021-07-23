@@ -1,4 +1,7 @@
-FROM continuumio/anaconda3
+FROM ubuntu:20.04
+
+ENV TZ=Asia/Tokyo
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # update and install
 RUN apt-get update -y && apt-get upgrade -y && apt-get install -y \
@@ -18,28 +21,25 @@ RUN apt-get update -y && apt-get install -y \
     libgl1-mesa-glx wget curl git tmux imagemagick htop libsndfile1\
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+RUN pip install jupyterlab
 
 # install nodejs
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash && \
+RUN wget https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash && \
+    exec bash && \
     . ~/.bashrc && \
     nvm install v14.17.0
 
 # install code server
 # https://github.com/jupyterhub/jupyter-server-proxy
-RUN conda install -c conda-forge nodejs && conda update nodejs
-# RUN conda install -c conda-forge jupyter-server-proxy
 RUN pip install jupyter-server-proxy
 RUN pip install jupyter-vscode-proxy
 RUN curl -fsSL https://code-server.dev/install.sh | sh
+# # RUN curl -fOL https://github.com/cdr/code-server/releases/download/v3.4.1/code-server_3.10.2_amd64.deb
+# # RUN dpkg -i code-server_3.4.1_amd64.deb
+# # RUN rm -r code-server_3.4.1_amd64.deb
 RUN code-server \
-  --install-extension ms-python.python \
-  --install-extension ms-ceintl.vscode-language-pack-ja
-# RUN curl -fOL https://github.com/cdr/code-server/releases/download/v3.4.1/code-server_3.4.1_amd64.deb
-# RUN dpkg -i code-server_3.4.1_amd64.deb
-# RUN rm -r code-server_3.4.1_amd64.deb
-
-# inport python library
-RUN pip install opencv-python
+    --install-extension ms-python.python \
+    --install-extension ms-ceintl.vscode-language-pack-ja
 
 # install R 
 RUN apt-get update -y && \
@@ -47,8 +47,22 @@ RUN apt-get update -y && \
     r-base libzmq3-dev libcurl4-openssl-dev libssl-dev
 RUN Rscript -e "install.packages(c('repr', 'IRdisplay', 'IRkernel'), type = 'source')"
 
+# install python library
+RUN pip install \
+    opencv-python \
+    numpy \
+    pandas \
+    matplotlib \
+    scipy \
+    beautifulsoup \
+    scikit-learn
+
 # matplotlib日本語化
 RUN pip install japanize-matplotlib
+
+RUN apt-get update -y && \
+    apt-get install -y \
+    screen
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
