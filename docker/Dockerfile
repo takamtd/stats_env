@@ -1,6 +1,5 @@
 FROM continuumio/anaconda3
 
-
 # update and install
 RUN apt-get update -y && apt-get upgrade -y && apt-get install -y \
     wget \
