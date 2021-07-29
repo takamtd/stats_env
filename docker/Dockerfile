@@ -41,12 +41,6 @@ RUN code-server \
     --install-extension ms-python.python \
     --install-extension ms-ceintl.vscode-language-pack-ja
 
-# install R 
-RUN apt-get update -y && \
-    apt-get install -y \
-    r-base libzmq3-dev libcurl4-openssl-dev libssl-dev
-RUN Rscript -e "install.packages(c('repr', 'IRdisplay', 'IRkernel'), type = 'source')"
-
 # install python library
 RUN pip install \
     opencv-python \
@@ -54,7 +48,6 @@ RUN pip install \
     pandas \
     matplotlib \
     scipy \
-    beautifulsoup \
     scikit-learn
 
 # matplotlib日本語化
@@ -75,9 +68,6 @@ USER ${USER_NAME}
 ENV HOME /home/${USER_NAME}
 
 RUN mkdir workdir
-
-RUN touch setup.R & \
-    echo "IRkernel::installspec()" > setup.R
 
 USER root
 

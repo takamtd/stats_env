@@ -1,7 +1,7 @@
 version: '3'
 services:
   stats:
-    image: python_ubuntu_env:v1.0
+    image: python_ubuntu_t:v1.0
     user: root
     ports:
       - "8888:8888"

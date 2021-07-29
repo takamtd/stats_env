@@ -1,1 +1,1 @@
-docker image build -t python_ubuntu_env:v1.0 .
+docker image build -t python_ubuntu_t:v1.0 .
